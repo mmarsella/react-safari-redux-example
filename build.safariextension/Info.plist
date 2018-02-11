@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Builder Version</key>
+	<string>11604.4.7.1.4</string>
+	<key>CFBundleDisplayName</key>
+	<string>build</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.build</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Database Quota</key>
+		<integer>5242880</integer>
+		<key>Global Page</key>
+		<string>background.html</string>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>DSCSDV</string>
+				<key>Image</key>
+				<string>img_16.png</string>
+				<key>Include By Default</key>
+				<true/>
+				<key>Label</key>
+				<string>ldlm</string>
+				<key>Palette Label</key>
+				<string>LMD</string>
+				<key>Tool Tip</key>
+				<string>LDM</string>
+			</dict>
+		</array>
+	</dict>
+	<key>DeveloperIdentifier</key>
+	<string>HU9AG8ZZFH</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
