@@ -17,7 +17,6 @@ export default function shallowDiff(oldObj, newObj) {
 
   Object.keys(newObj).forEach((key) => {
     if (oldObj[key] !== newObj[key]) {
-      // console.log('DIFFERENCE FOUND: (oldObj[key] !== newObj[key])', oldObj[key] , newObj[key], key)
       difference.push({
         key,
         value: newObj[key],
@@ -28,16 +27,12 @@ export default function shallowDiff(oldObj, newObj) {
 
   Object.keys(oldObj).forEach(key => {
     if (!newObj[key]) {
-      // console.log('DIFFERENCE FOUND: (!newObj[key])', key, newObj[key])
       difference.push({
         key,
         change: DIFF_STATUS_REMOVED,
       });
     }
   });
-
-
-  // console.log('DIFFERENCE AFTER: ', difference);
 
   return difference;
 }

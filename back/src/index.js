@@ -14,7 +14,6 @@ const store = createStore(
 
 wrapStore(store, { portName: portName});
 
-
 safari.application.addEventListener("command", (evt) => {
 	const activeTab = safari.application.activeBrowserWindow.activeTab;
 	store.dispatch(actions.increment(activeTab.id));
@@ -64,15 +63,3 @@ safari.application.addEventListener("activate", (evt) => {
     return;
   }
 }, true);
-
-
-
-
-
-
-
-
-
-
-
-
