@@ -3,15 +3,26 @@ A safari implementation of chrome-react-redux
 
 This is a simple example demonstrating the functionality of safari-react-redux.  
 
+The core functionality that has been modified to operate in Safari can be found in the following files:
+```
+back/src/messaging/wrapStore.js
+back/src/safariTabId/*
+front/src/messaging/store.js
+```
+
 To get the extension up and running, please be in the root directory and do the following:
 
-1)  `npm install`
-2)  `gulp build`   --> Will create a build.safariextension directory.
-3)  Open Safari    -->  In the 'Develop' tab, click on "show extension builder"
-4)  In the bottom right corner of the extension builder, click the "+" and select "add extension.  Point 
+
+To create a build:
+`npm install`
+`gulp build`   --> Will create a build.safariextension directory.
+  
+  
+1)  Open Safari    -->  In the 'Develop' tab, click on "show extension builder"
+2)  In the bottom right corner of the extension builder, click the "+" and select "add extension.  Point 
     to build.safariextension.
-5)  Once the build is loaded into extension builder, click "install" for this build.
-6)  Once installed, click "Inspect Global Page" to view the extension's background page.
+3)  Once the build is loaded into extension builder, click "install" for this build.
+4)  Once installed, click "Inspect Global Page" to view the extension's background page.
 
 
 *** This extension uses redux-logger to display the current state of the store. ***
