@@ -1,17 +1,9 @@
-# safari-react-redux
-A safari implementation of chrome-react-redux
+# safari-react-redux-example
+This is a simple example demonstrating the functionality of [react-safari-redux](https://github.com/mmarsella/react-safari-redux).
 
-This is a simple example demonstrating the functionality of safari-react-redux.  
-
-The core functionality that has been modified to operate in Safari can be found in the following files:
-```
-back/src/messaging/wrapStore.js
-back/src/safariTabId/*
-front/src/messaging/store.js
-```
+This example demonstrates connecting the Safari extension's background page with a tab's content script.
 
 To get the extension up and running, please be in the root directory and do the following:
-
 
 To create a build:
 `npm install`
@@ -35,6 +27,3 @@ The store can be changed by:
 -  Toggling to a new tab will set the store's `currentTabId` to that specific tab's ID.
 
 
-Note:
-
-I wrote a helper library to attach IDs to Safari tabs which wrapStore.js relies on.
