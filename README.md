@@ -1,4 +1,4 @@
-# safari-react-redux-example
+# react-safari-redux-example
 This is a simple example demonstrating the functionality of [react-safari-redux](https://github.com/mmarsella/react-safari-redux).
 
 This example demonstrates connecting the Safari extension's background page with a tab's content script.
