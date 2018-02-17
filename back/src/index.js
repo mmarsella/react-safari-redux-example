@@ -2,7 +2,11 @@ import {applyMiddleware, createStore, compose} from 'redux';
 import rootReducer from './reducers';
 import * as actions from './reducers/actions';
 import {logger} from 'redux-logger';
-import wrapStore from './messaging/wrapStore.js';
+// import wrapStore from './messaging/wrapStore.js';
+import {wrapStore} from 'react-safari-redux'
+
+
+console.log('wrapStore', wrapStore)
 
 const portName = '__SAFARI_EXT__';
 

@@ -1,4 +1,6 @@
-import Store from '../messaging/Store';
+import {Store} from 'react-safari-redux';
+
+console.log('!!!!!!!!!!! STORE:', Store)
 
 let timerID;
 const portName = '__SAFARI_EXT__';

@@ -1,5 +1,5 @@
 {
-  "name": "react-safari-redux",
+  "name": "rsr demo",
   "version": "0.0.1",
   "private": true,
   "description": "",
@@ -7,11 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/gulp"
   },
-  "author": "Mark Marsella, Sam Hastings",
+  "author": "Mark Marsella",
   "dependencies": {
     "react": "^15.5.0",
+    "react-chrome-redux": "^1.5.1",
     "react-dom": "^15.5.0",
     "react-redux": "^4.0.0",
+    "react-safari-redux": "^1.0.2",
     "redux": "^3.0.4"
   },
   "devDependencies": {

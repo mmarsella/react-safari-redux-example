@@ -5,7 +5,7 @@ import rimraf from 'rimraf';
 
 const plugins = loadPlugins();
 
-// import popupWebpackConfig from './popup/webpack.config';
+//import popupWebpackConfig from './front/src/popup/webpack.config';
 import backWebpackConfig from './back/webpack.config';
 import frontWebpackConfig from './front/webpack.config';
 
@@ -21,6 +21,7 @@ gulp.task('popup-js', ['clean'], (cb) => {
   });
 });
 */
+
 
 gulp.task('back-js', ['clean'], (cb) => {
   webpack(backWebpackConfig, (err, stats) => {
@@ -43,27 +44,28 @@ gulp.task('front-js', ['clean'], (cb) => {
 });
 
 
+
 /*
 gulp.task('popup-html', ['clean'], () => {
-  return gulp.src('popup/src/index.html')
+  return gulp.src('front/src/popup/src/index.html')
     .pipe(plugins.rename('popup.html'))
-    .pipe(gulp.dest('./build.safariextension'))
+    .pipe(gulp.dest('./build.safariextension/'))
 });
 */
 
 gulp.task('background-html', ['clean'], () => {
   return gulp.src('back/src/background.html')
-    .pipe(gulp.dest('./build.safariextension'))
+    .pipe(gulp.dest('./build.safariextension/'))
 });
 
 gulp.task('imgs', ['clean'], () => {
   return gulp.src('imgs/*')
-    .pipe(gulp.dest('./build.safariextension'))
+    .pipe(gulp.dest('./build.safariextension/'))
 });
 
 gulp.task('pList', ['clean'], () => {
   return gulp.src('./Info.plist')
-    .pipe(gulp.dest('./build.safariextension'))
+    .pipe(gulp.dest('./build.safariextension/'))
 });
 
 /*
@@ -77,11 +79,13 @@ gulp.task('clean', (cb) => {
   rimraf('./build.safariextension', cb);
 });
 
-// 'popup-js', 'popup-html', 'copy-manifest'
+
+// , 'popup-js', 'popup-html',
+//  'copy-manifest'
 gulp.task('build', ['back-js', 'front-js', 'background-html', 'imgs', 'pList']);
 
 gulp.task('watch', ['default'], () => {
-  // gulp.watch('popup/**/*', ['build']);
+ // gulp.watch('popup/**/*', ['build']);
   gulp.watch('front/**/*', ['build']);
   gulp.watch('back/**/*', ['build']);
 });

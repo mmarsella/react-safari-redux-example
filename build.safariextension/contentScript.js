@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,11 +73,41 @@
 "use strict";
 
 
-var _Store = __webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// Message type used for dispatch events
+// from the Proxy Stores to background
+var DISPATCH_TYPE = exports.DISPATCH_TYPE = 'chromex.dispatch';
 
-var _Store2 = _interopRequireDefault(_Store);
+// Message type used for dispatch events from the 
+// Proxy Stores to background when Store is created.
+var STORE_INIT = exports.STORE_INIT = 'proxyInit';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+// Message type for state update events from
+// background to Proxy Stores
+var STATE_TYPE = exports.STATE_TYPE = 'chromex.state';
+
+// Message type for state patch events from
+// background to Proxy Stores
+var PATCH_STATE_TYPE = exports.PATCH_STATE_TYPE = 'chromex.patch_state';
+
+// The `change` value for updated or inserted fields resulting from shallow diff
+var DIFF_STATUS_UPDATED = exports.DIFF_STATUS_UPDATED = 'updated';
+
+// The `change` value for removed fields resulting from shallow diff
+var DIFF_STATUS_REMOVED = exports.DIFF_STATUS_REMOVED = 'removed';
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _reactSafariRedux = __webpack_require__(2);
+
+console.log('!!!!!!!!!!! STORE:', _reactSafariRedux.Store);
 
 var timerID = void 0;
 var portName = '__SAFARI_EXT__';
@@ -89,7 +119,7 @@ function runToolbar() {
   }
 
   // Initializing a proxyStore takes a portname and a string to indicate where it is being initialized.
-  var proxyStore = new _Store2.default({ portName: portName }, 'TOOLBAR');
+  var proxyStore = new _reactSafariRedux.Store({ portName: portName }, 'TOOLBAR');
 
   proxyStore.ready().then(function () {
     clearTimeout(timerID);
@@ -102,7 +132,32 @@ if (window === window.top) {
 }
 
 /***/ }),
-/* 1 */
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.wrapStore = exports.Store = undefined;
+
+var _Store = __webpack_require__(3);
+
+var _Store2 = _interopRequireDefault(_Store);
+
+var _wrapStore = __webpack_require__(6);
+
+var _wrapStore2 = _interopRequireDefault(_wrapStore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.Store = _Store2.default;
+exports.wrapStore = _wrapStore2.default;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -114,7 +169,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -330,7 +385,42 @@ var Store = function () {
 exports.default = Store;
 
 /***/ }),
-/* 2 */
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var ID_COUNTER = 1;
+exports.default = {
+	checkAllTabsForID: function checkAllTabsForID() {
+		if (safari.application.activeBrowserWindow) {
+			safari.application.activeBrowserWindow.tabs.forEach(function (tab, i) {
+				if (!safari.application.activeBrowserWindow.tabs[i].id) {
+					tab.id = ID_COUNTER;
+					ID_COUNTER++;
+				}
+			});
+		}
+	},
+	getTab: function getTab(tabID, cb) {
+		var tabs = safari.application.activeBrowserWindow.tabs;
+		for (var i = 0; i < tabs.length; i++) {
+			if (tabs[i].id === tabID) {
+				if (cb) {
+					cb(tabs[i]);
+				}
+				return tabs[i];
+			}
+		}
+	}
+};
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -339,33 +429,272 @@ exports.default = Store;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// Message type used for dispatch events
-// from the Proxy Stores to background
-var DISPATCH_TYPE = exports.DISPATCH_TYPE = 'chromex.dispatch';
+exports.default = shallowDiff;
 
-// Message type used for dispatch events from the 
-// Proxy Stores to background when Store is created.
-var STORE_INIT = exports.STORE_INIT = 'proxyInit';
+var _constants = __webpack_require__(0);
 
-// Message type for state update events from
-// background to Proxy Stores
-var STATE_TYPE = exports.STATE_TYPE = 'chromex.state';
+/**
+ * Returns a new Object containing only the fields in `new` that differ from `old`
+ *
+ * @param {Object} old
+ * @param {Object} new
+ * @return {Array} An array of changes. The changes have a `key`, `value`, and `change`.
+ *   The change is either `updated`, which is if the value has changed or been added,
+ *   or `removed`.
+ */
+function shallowDiff(oldObj, newObj) {
+  var difference = [];
 
-// Message type for state patch events from
-// background to Proxy Stores
-var PATCH_STATE_TYPE = exports.PATCH_STATE_TYPE = 'chromex.patch_state';
+  Object.keys(newObj).forEach(function (key) {
+    if (oldObj[key] !== newObj[key]) {
+      difference.push({
+        key: key,
+        value: newObj[key],
+        change: _constants.DIFF_STATUS_UPDATED
+      });
+    }
+  });
 
-// The `change` value for updated or inserted fields resulting from shallow diff
-var DIFF_STATUS_UPDATED = exports.DIFF_STATUS_UPDATED = 'updated';
+  Object.keys(oldObj).forEach(function (key) {
+    if (!newObj[key]) {
+      difference.push({
+        key: key,
+        change: _constants.DIFF_STATUS_REMOVED
+      });
+    }
+  });
 
-// The `change` value for removed fields resulting from shallow diff
-var DIFF_STATUS_REMOVED = exports.DIFF_STATUS_REMOVED = 'removed';
+  return difference;
+}
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _constants = __webpack_require__(0);
+
+var _shallowDiff = __webpack_require__(5);
+
+var _shallowDiff2 = _interopRequireDefault(_shallowDiff);
+
+var _safariTabID = __webpack_require__(4);
+
+var _safariTabID2 = _interopRequireDefault(_safariTabID);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// handles attaching tab IDs to safari tabs and getting a tab.
+
+
+// console.log('******' , shallowDiff)
+/**
+ * Responder for promisified results
+ * @param  {object} dispatchResult The result from `store.dispatch()`
+ * @param  {function} send         The function used to respond to original message
+ * @return {undefined}
+ */
+
+var promiseResponder = function promiseResponder(dispatchResult, send) {
+  Promise.resolve(dispatchResult).then(function (res) {
+    send({
+      error: null,
+      value: res,
+      from: "promiseResponder"
+    });
+  }).catch(function (err) {
+    send({
+      error: err.message,
+      value: null,
+      from: "promiseResponder"
+    });
+  });
+};
+
+exports.default = function (store, _ref) {
+  var portName = _ref.portName,
+      dispatchResponder = _ref.dispatchResponder;
+
+
+  // array of objs that contain:  tabID, unsubscribe()
+  var proxyStores = [];
+  _safariTabID2.default.checkAllTabsForID();
+
+  if (!portName) {
+    throw new Error('portName is required in options');
+  }
+
+  // set dispatch responder as promise responder
+  if (!dispatchResponder) {
+    dispatchResponder = promiseResponder;
+  }
+
+  /**
+   * Respond to dispatches from UI components
+   */
+  var dispatchResponse = function dispatchResponse(request, sender, sendResponse) {
+    if (request.type === _constants.DISPATCH_TYPE && request.portName === portName) {
+      var action = Object.assign({}, request.payload, {
+        // sender will always be null
+        _sender: sender
+      });
+
+      var dispatchResult = null;
+
+      try {
+        dispatchResult = store.dispatch(action);
+      } catch (e) {
+        dispatchResult = Promise.reject(e.message);
+        console.error(e);
+      }
+
+      dispatchResponder(dispatchResult, sendResponse);
+      return;
+    }
+  };
+
+  /*
+    * Setup for state updates
+  */
+  var connectState = function connectState(evt, tab) {
+    if (evt.port !== portName) {
+      return;
+    }
+
+    if (!tab.id) {
+      _safariTabID2.default.checkAllTabsForID();
+    }
+
+    var prevState = store.getState();
+
+    var patchState = function patchState() {
+      var state = store.getState();
+      var diff = (0, _shallowDiff2.default)(prevState, state);
+
+      if (diff.length) {
+        prevState = state;
+
+        dispatchAllTabs({
+          type: _constants.PATCH_STATE_TYPE,
+          payload: diff
+        });
+      }
+    };
+
+    // Send patched state down connected port on every redux store state change
+    var unsubscribe = store.subscribe(patchState);
+    proxyStores.push({ tabID: tab.id, unsubscribe: unsubscribe, from: evt.from });
+
+    // safari.extension.settings.proxyStores = proxyStores;  // for testing only --> uncomment to check on the current state of proxyStores off of the safari.extension.settings obj
+
+
+    _safariTabID2.default.getTab(tab.id, function (curTab) {
+      // Send store's initial state through port
+      curTab.page.dispatchMessage(portName, {
+        type: _constants.STATE_TYPE,
+        payload: prevState
+      });
+    });
+  };
+
+  // when the port disconnects, unsubscribe the sendState listener    
+  function disconnectStore(evt) {
+    var tab = evt.target;
+    proxyStores = findAndRemoveProxyStore(tab.id);
+    safari.extension.settings.proxyStores = proxyStores;
+  }
+
+  // listen for any URL CHANGE or CLOSE EVENT. Unsubscribe stores.
+  safari.application.addEventListener("close", disconnectStore, true);
+  safari.application.addEventListener("beforeNavigate", disconnectStore, true);
+
+  var dispatchAllTabs = function dispatchAllTabs(details) {
+    // dispatch message to all tabs in active browser window
+    var tabLength = safari.application.activeBrowserWindow.tabs.length;
+    var tabs = safari.application.activeBrowserWindow.tabs.slice();
+    tabs.forEach(function (tab, i) {
+
+      // Check if this is a blank Safari page
+      if (tab.page) {
+        tab.page.dispatchMessage(portName, details);
+      }
+    });
+  };
+
+  /**
+   * Setup action handler
+   */
+
+  var handleMsg = function handleMsg(msg) {
+
+    // Check if this is a blank Safari page
+    if (!msg.target.url) {
+      return;
+    }
+
+    switch (msg.name) {
+      case _constants.STORE_INIT:
+        connectState(msg.message, msg.target);
+        break;
+      case _constants.DISPATCH_TYPE:
+        dispatchResponse(msg.message, null, dispatchAllTabs);
+        break;
+      default:
+        return;
+    }
+  };
+
+  // Handles 2 things
+  // 1)  Handle initial INIT EVENT when a new Store is created  -->  response is connectState (needs to replace chrome.runtime.onConnect.addListener(connectState))
+  // 2)  Handle incoming messages from existing Stores 
+  safari.application.addEventListener("message", handleMsg, false);
+
+  // Finds and removes a proxyStore. Also unsubscribes the store.
+  function findAndRemoveProxyStore(tabID) {
+    var arr = proxyStores.filter(function (store, idx) {
+      if (store.tabID === tabID) {
+        store.unsubscribe();
+      }
+      return store.tabID !== tabID;
+    });
+    return arr;
+  }
+
+  /**
+   * Setup external action handler
+   */
+
+  // if (chrome.runtime.onMessageExternal) {
+  //   chrome.runtime.onMessageExternal.addListener(dispatchResponse);
+  // } else {
+  //   console.warn('runtime.onMessageExternal is not supported');
+  // }
+
+  /**
+   * Setup extended connection
+   */
+
+  /**
+   * Setup extended external connection
+   */
+  // if (chrome.runtime.onConnectExternal) {
+  //   chrome.runtime.onConnectExternal.addListener(connectState);
+  // } else {
+  //   console.warn('runtime.onConnectExternal is not supported');
+  // }
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(1);
 
 
 /***/ })
