@@ -1,6 +1,4 @@
-import {Store} from 'react-safari-redux';
-
-console.log('!!!!!!!!!!! STORE:', Store)
+import {Store} from '../../../react-safari-redux/src';
 
 let timerID;
 const portName = '__SAFARI_EXT__';

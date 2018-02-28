@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Mark Marsella</string>
 	<key>Builder Version</key>
-	<string>12604.5.6.1.1</string>
+	<string>11604.4.7.1.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>safari-react-redux DEMO</string>
 	<key>CFBundleIdentifier</key>
@@ -48,6 +48,8 @@
 				<string>ToolbarItem</string>
 				<key>Palette Label</key>
 				<string>LMD</string>
+				<key>Popover</key>
+				<string>popup</string>
 			</dict>
 		</array>
 	</dict>

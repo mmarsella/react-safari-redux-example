@@ -5,12 +5,11 @@ import rimraf from 'rimraf';
 
 const plugins = loadPlugins();
 
-//import popupWebpackConfig from './front/src/popup/webpack.config';
+import popupWebpackConfig from './front/src/popup/webpack.config';
 import backWebpackConfig from './back/webpack.config';
 import frontWebpackConfig from './front/webpack.config';
 
 
-/*
 gulp.task('popup-js', ['clean'], (cb) => {
   webpack(popupWebpackConfig, (err, stats) => {
     if(err) throw new plugins.util.PluginError('webpack', err);
@@ -20,6 +19,7 @@ gulp.task('popup-js', ['clean'], (cb) => {
     cb();
   });
 });
+/*
 */
 
 
@@ -45,12 +45,12 @@ gulp.task('front-js', ['clean'], (cb) => {
 
 
 
-/*
 gulp.task('popup-html', ['clean'], () => {
   return gulp.src('front/src/popup/src/index.html')
     .pipe(plugins.rename('popup.html'))
     .pipe(gulp.dest('./build.safariextension/'))
 });
+/*
 */
 
 gulp.task('background-html', ['clean'], () => {
@@ -82,10 +82,10 @@ gulp.task('clean', (cb) => {
 
 // , 'popup-js', 'popup-html',
 //  'copy-manifest'
-gulp.task('build', ['back-js', 'front-js', 'background-html', 'imgs', 'pList']);
+gulp.task('build', ['back-js', 'front-js', 'background-html', 'imgs', 'pList', 'popup-js', 'popup-html']);
 
 gulp.task('watch', ['default'], () => {
- // gulp.watch('popup/**/*', ['build']);
+  gulp.watch('popup/**/*', ['build']);
   gulp.watch('front/**/*', ['build']);
   gulp.watch('back/**/*', ['build']);
 });
